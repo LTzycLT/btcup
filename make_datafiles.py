@@ -17,7 +17,7 @@ END_TOKENS = ['.', '!', '?', '...', "'", "`", '"', dm_single_close_quote, dm_dou
 SENTENCE_START = '<s>'
 SENTENCE_END = '</s>'
 
-train_files = ["bytecup.corpus.train.0.txt"]
+train_files = ["bytecup.corpus.train.0.txt", "bytecup.corpus.train.1.txt", "bytecup.corpus.train.2.txt", "bytecup.corpus.train.3.txt"]
 val_files = []
 test_files = ["bytecup.corpus.validation_set.txt"]
 
@@ -151,7 +151,7 @@ if __name__ == '__main__':
     if not os.path.exists(raw_files_dir): os.makedirs(raw_files_dir)
     if not os.path.exists(split_files_dir): os.makedirs(split_files_dir)
     if not os.path.exists(tokenized_files_dir): os.makedirs(tokenized_files_dir)
-
+    """
     for fname in os.listdir(raw_files_dir):
         with open("%s/%s" % (raw_files_dir, fname)) as f, open("%s/%s" % (split_files_dir, fname), 'w') as fc:
             for cnt, line in enumerate(f):
@@ -161,6 +161,7 @@ if __name__ == '__main__':
 
     # Run stanford tokenizer on both stories dirs, outputting to tokenized stories directories
     tokenize_stories(split_files_dir, tokenized_files_dir)
+    """
 
     # Read the tokenized stories, do a little postprocessing then write to bin files
     write_to_bin(test_files, os.path.join(finished_files_dir, "test.bin"))
