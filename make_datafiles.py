@@ -18,7 +18,7 @@ SENTENCE_START = '<s>'
 SENTENCE_END = '</s>'
 
 train_files = ["bytecup.corpus.train.0.txt", "bytecup.corpus.train.1.txt", "bytecup.corpus.train.2.txt", "bytecup.corpus.train.3.txt"]
-val_files = []
+val_files = ["bytecup.corpus.train.8.txt"]
 test_files = ["bytecup.corpus.validation_set.txt"]
 
 finished_files_dir = "finished_files"
@@ -118,6 +118,8 @@ def write_to_bin(in_files, out_file, makevocab=False):
                 if idx % 10000 == 0:
                     print("Writing story %i of %i; %.2f percent done" % (idx, num_stories, float(idx)*100.0/float(num_stories)))
                 # Write to tf.Example
+                if makevocab and len(content) > 2000:
+                    continue
                 tf_example = example_pb2.Example()
                 tf_example.features.feature['article'].bytes_list.value.extend([content.encode()])
                 tf_example.features.feature['abstract'].bytes_list.value.extend([title.encode()])
@@ -151,7 +153,7 @@ if __name__ == '__main__':
     if not os.path.exists(raw_files_dir): os.makedirs(raw_files_dir)
     if not os.path.exists(split_files_dir): os.makedirs(split_files_dir)
     if not os.path.exists(tokenized_files_dir): os.makedirs(tokenized_files_dir)
-    """
+
     for fname in os.listdir(raw_files_dir):
         with open("%s/%s" % (raw_files_dir, fname)) as f, open("%s/%s" % (split_files_dir, fname), 'w') as fc:
             for cnt, line in enumerate(f):
@@ -161,12 +163,11 @@ if __name__ == '__main__':
 
     # Run stanford tokenizer on both stories dirs, outputting to tokenized stories directories
     tokenize_stories(split_files_dir, tokenized_files_dir)
-    """
 
     # Read the tokenized stories, do a little postprocessing then write to bin files
-    write_to_bin(test_files, os.path.join(finished_files_dir, "test.bin"))
+    #write_to_bin(test_files, os.path.join(finished_files_dir, "test.bin"))
     write_to_bin(val_files, os.path.join(finished_files_dir, "val.bin"))
-    write_to_bin(train_files, os.path.join(finished_files_dir, "train.bin"), makevocab=True)
+    #write_to_bin(train_files, os.path.join(finished_files_dir, "train.bin"), makevocab=True)
 
     # Chunk the data. This splits each of train.bin, val.bin and test.bin into smaller chunks, each containing e.g. 1000 examples, and saves them in finished_files/chunks
     chunk_all()
